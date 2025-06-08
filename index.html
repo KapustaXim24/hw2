@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>AR Сцена з Текстурою, Моделлю та Шрифтом</title>
+    <!-- Підключаємо бібліотеку A-Frame -->
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <!-- Підключаємо бібліотеку AR.js для A-Frame -->
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+
+    <!-- 
+      Створюємо сцену AR.js. 
+      'embedded' робить її частиною сторінки.
+      'vr-mode-ui="enabled: false;"' прибирає кнопку переходу у VR, яка нам не потрібна.
+    -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false;">
+      
+      <!-- 
+        <a-assets> - це спеціальний тег для попереднього завантаження ресурсів.
+        Це прискорює роботу сцени, бо всі моделі і текстури завантажуються наперед.
+      -->
+      <a-assets>
+        <!-- Завантажуємо текстуру трави і даємо їй id="grass-texture" -->
+        <img id="grass-texture" src="images/grass.png">
+        
+        <!-- Завантажуємо 3D-модель і даємо їй id="car-model" -->
+        <a-asset-item id="car-model" src="models/rrs18.glb"></a-asset-item>
+
+        <!-- 
+          Завантажуємо шрифт. Важливо: ми вказуємо шлях до .json файлу, 
+          а A-Frame автоматично знайде .png файл з таким же іменем у тій самій папці.
+        -->
+        <a-asset-item id="custom-font" src="fonts/custom-msdf.json"></a-asset-item>
+      </a-assets>
+
+      <!-- 
+        Створюємо маркер. preset="hiro" - це стандартний, вбудований в AR.js маркер.
+        Все, що знаходиться всередині <a-marker>, буде з'являтися на цьому маркері.
+      -->
+      <a-marker preset="hiro">
+
+        <!-- 1. Куб з текстурою трави. Ми використовуємо id з <a-assets> -->
+        <a-box position="0 0.5 0" depth="1" height="1" width="1" 
+               src="#grass-texture">
+        </a-box>
+
+        <!-- 2. 3D модель. Розміщуємо її трохи вище куба -->
+        <a-entity gltf-model="#car-model" 
+                  position="0 1.2 0" 
+                  scale="0.4 0.4 0.4">
+        </a-entity>
+
+        <!-- 3. Текст із вашим прізвищем та кастомним шрифтом -->
+        <a-entity position="0 1.8 0" 
+                  text="value: Kapusta Alina; 
+                        font: fonts/custom-msdf.json; 
+                        negate: false;
+                        align: center; 
+                        color: #FFFF00; 
+                        width: 4;">  
+        </a-entity>
+        <!-- 
+          Важливі параметри тексту:
+          value: Kapusta Alina - тут ваше прізвище. Використовуйте латиницю, якщо ваш шрифт її підтримує.
+          font: fonts/custom-msdf.json - шлях до файлу шрифта.
+          negate: false - важливо для msdf шрифтів, інакше він може бути "вивернутим".
+          align: center - вирівнювання тексту.
+        -->
+      </a-marker>
+
+      <!-- Додаємо камеру для AR.js -->
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>
